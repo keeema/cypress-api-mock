@@ -1,6 +1,6 @@
-cypress-api-mock
+# cypress-api-mock
 
-Cypress task plugin with commands mocking API. It runs its own http server and returns registered responses.
+Cypress task plugin with commands for mocking API. It runs its own http server and returns registered responses.
 
 ## Adding to project
 
@@ -43,7 +43,7 @@ cy.apiMockResetRequests();
 ### Mock specific API
 
 ```tsx
-cy.apiMock("/test-api", testApiResponse);
+cy.apiMock("/test-api", `{"id":10,"message":"Test Response Message!"}`);
 ```
 
 ### Assertion
