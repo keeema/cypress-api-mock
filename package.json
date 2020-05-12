@@ -1,0 +1,31 @@
+{
+    "name": "cypress-api-mock",
+    "version": "0.0.1",
+    "description": "Cypress plugin for mocking API",
+    "main": "index",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "t.rut",
+    "license": "MIT",
+    "prettier": {
+        "printWidth": 140,
+        "tabWidth": 4
+    },
+    "dependencies": {
+        "@types/node": "^13.7.7",
+        "cypress": "^4.5.0"
+    },
+    "devDependencies": {
+        "@cypress/webpack-preprocessor": "^4.1.1",
+        "@typescript-eslint/eslint-plugin": "*",
+        "@typescript-eslint/parser": "*",
+        "eslint": "*",
+        "eslint-config-bobril": "*",
+        "prettier": "*",
+        "ts-loader": "^6.2.1",
+        "typescript": "^3.8.3",
+        "webpack": "^4.41.2",
+        "webpack-cli": "^3.3.11"
+    }
+}
