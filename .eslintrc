@@ -2,8 +2,6 @@
     "extends": "eslint-config-bobril",
     "rules": {
         "@typescript-eslint/no-explicit-any": "off",
-        "no-console": "off",
-        "curly": [2, "multi-line"],
-        "spaced-comment": ["warn", "always", { "markers": ["/"] }]
+        "no-console": "off"
     }
 }

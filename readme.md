@@ -12,14 +12,17 @@ Add following lines to your _commands.ts_:
 import "cypress-api-mock/commands";
 ```
 
-Add following lines to your _plugins/index.js_:
+Add following lines to your _plugins/index.ts_:
 
 ```tsx
-const apiMock = require("cypress-api-mock/plugin/dist/apiMock.js");
+import apiMock from "cypress-api-mock/plugin";
 
-module.exports = (on, config) => {
+function register(on: Cypress.PluginEvents, config: Cypress.ConfigOptions): void {
+    /* your other registrations */
     apiMock(on, config);
-};
+}
+
+export = register;
 ```
 
 It will start server in the default address http://localhost:3000,

@@ -1,6 +1,6 @@
-module.exports = {
+export = {
     resolve: {
-        extensions: [".js", ".ts", ".d.ts"]
+        extensions: [".js", ".ts", ".d.ts"],
     },
     module: {
         rules: [
@@ -10,11 +10,11 @@ module.exports = {
                 use: [
                     {
                         loader: "ts-loader",
-                        options: { allowTsInNodeModules: true }
-                    }
-                ]
-            }
-        ]
+                        options: { allowTsInNodeModules: true },
+                    },
+                ],
+            },
+        ],
     },
-    mode: "development"
+    mode: "development",
 };

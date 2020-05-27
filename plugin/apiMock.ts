@@ -3,10 +3,10 @@
 
 import * as http from "http";
 
-function register(on: Cypress.PluginEvents, config?: IApiMockConfiguration): void {
-    config = Object.assign({ apiMockServer: { hostname: "127.0.0.1", hostPort: 3000 } }, config);
+function register(on: Cypress.PluginEvents, config?: Partial<IApiMockConfiguration>): void {
+    const fullConfig: IApiMockConfiguration = Object.assign({ apiMockServer: { hostname: "127.0.0.1", hostPort: 3000 } }, config);
 
-    startServer(config);
+    startServer(fullConfig);
     on("task", {
         "api-mock:register": (options: IApiMockOptions): null => registerMock(options.pattern, options.response),
         "api-mock:get-calls": (): { [key: string]: string[] } => getCalls(),
@@ -15,13 +15,17 @@ function register(on: Cypress.PluginEvents, config?: IApiMockConfiguration): voi
     });
 }
 
+export default register;
+
 const mocks = new Map<string, string | Object>();
 const calls = new Map<string, string[]>();
 
 function getCalls(): { [key: string]: string[] } {
     const result: { [key: string]: string[] } = {};
     calls.forEach((value, key) => {
-        if (result !== undefined) result[key] = value;
+        if (result !== undefined) {
+            result[key] = value;
+        }
     });
     return result;
 }
@@ -93,7 +97,7 @@ async function getRequestData(req: http.IncomingMessage): Promise<string> {
     return new Promise<string>((resolve) => {
         let allData = "";
 
-        req.on("data", (data) => (allData += data));
+        req.on("data", (data: any) => (allData += data));
         req.on("end", () => resolve(allData));
     });
 }
@@ -101,5 +105,3 @@ async function getRequestData(req: http.IncomingMessage): Promise<string> {
 function log(message?: any, ...optionalParams: any[]): void {
     console.log("API-MOCK", message, ...optionalParams, "\x1b[0m");
 }
-
-export = register;
