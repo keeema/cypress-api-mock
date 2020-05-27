@@ -46,25 +46,11 @@ cy.apiMockResetRequests();
 ### Mock specific API
 
 ```tsx
-cy.apiMock("/test-api", `{"id":10,"message":"Test Response Message!"}`);
+cy.apiMock("/test-api", '{"id":${body.id},"message":"Hello ${body.name}!"}');
 ```
 
 ### Assertion
 
 ```tsx
 cy.apiMockRequests().should((requests) => expect(requests["/test-api"]).exist);
-```
-
-## How to Develope
-
-To build plugin just run in _plugin_ folder command:
-
-```bash
-npx webpack --watch
-```
-
-Then run tests in root:
-
-```bash
-npx cypress open
 ```

@@ -3,6 +3,8 @@
 
 import * as http from "http";
 
+const paramRegex = /\$\{(?![0-9])[.a-zA-Z0-9$_]+\}/gm;
+
 function register(on: Cypress.PluginEvents, config?: Partial<IApiMockConfiguration>): void {
     const fullConfig: IApiMockConfiguration = Object.assign({ apiMockServer: { hostname: "127.0.0.1", hostPort: 3000 } }, config);
 
@@ -47,9 +49,9 @@ function registerMock(pattern: string, response: string | Object): null {
 }
 function startServer(config: IApiMockConfiguration): void {
     const server = http.createServer(async (req, res) => {
-        await processRequest(req);
+        const body = await processRequest(req);
         if (req.url !== undefined && mocks.has(req.url)) {
-            const answer = prepareAnswer(req.url);
+            const answer = prepareAnswer(req.url, body);
             registerCall(req.url, answer);
             answerOK(res, answer);
         } else {
@@ -67,9 +69,33 @@ function registerCall(url: string, answer: string): void {
     particularCalls.push(answer);
     calls.set(url, particularCalls);
 }
-function prepareAnswer(url: string): string {
+function prepareAnswer(url: string, body: string): string {
     const answer = mocks.get(url) || "";
-    return typeof answer === "string" ? answer : JSON.stringify(answer);
+    return parseParameters(answer, body);
+}
+
+function parseParameters(answer: string | object, body: string): string {
+    const answerStr = typeof answer === "string" ? answer : JSON.stringify(answer);
+    const regex = new RegExp(paramRegex);
+    const bodyObj = JSON.parse(body);
+    return answerStr.replace(regex, (match) => getParamValue(bodyObj, match));
+}
+
+function getParamValue(bodyObj: object, param: string): string {
+    try {
+        const cleanParam = param.substr(2, param.length - 3);
+        const path = cleanParam.split(".");
+        let result: any = bodyObj;
+        for (const part of path) {
+            if (part !== "body") {
+                result = result[part];
+            }
+        }
+        return result ? result.toString() : result;
+    } catch (err) {
+        log("\x1b[31m" + `Error in parsing param '${param}':  ${err}`);
+        return "error";
+    }
 }
 
 async function processRequest(req: http.IncomingMessage): Promise<string> {
