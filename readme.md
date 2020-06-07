@@ -68,5 +68,3 @@ and then run cypress:
 ```bash
 npx cypress open
 ```
-
-The build is performed only once on the cypress test first start.
