@@ -7,3 +7,5 @@ cypress.json
 cypress
 node_modules
 webpack.config.ts
+webpack.config.plugin.ts
+.eslintrc

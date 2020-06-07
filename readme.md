@@ -54,3 +54,19 @@ cy.apiMock("/test-api", '{"id":${body.id},"message":"Hello ${body.name}!"}');
 ```tsx
 cy.apiMockRequests().should((requests) => expect(requests["/test-api"]).exist);
 ```
+
+## How to Develope
+
+To build plugin run webpack with specific config:
+
+```bash
+npx webpack --config webpack.config.plugin.ts -w
+```
+
+and then run cypress:
+
+```bash
+npx cypress open
+```
+
+The build is performed only once on the cypress test first start.
