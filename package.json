@@ -1,6 +1,6 @@
 {
     "name": "cypress-api-mock",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Cypress plugin for mocking API",
     "main": "index",
     "scripts": {
@@ -13,7 +13,7 @@
         "tabWidth": 4
     },
     "dependencies": {
-        "cypress": "4.*.*"
+        "cypress": "^4.3.0"
     },
     "devDependencies": {
         "@cypress/webpack-preprocessor": "^5.4.1",
