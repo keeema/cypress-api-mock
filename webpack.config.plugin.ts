@@ -5,7 +5,7 @@ const config: webpack.Configuration = {
     mode: "development",
     entry: path.resolve(__dirname, "plugin", "apiMock.ts"),
     output: {
-        path: path.resolve(__dirname, "plugin"),
+        path: path.resolve(__dirname, "plugin", "dist"),
         filename: "apiMock.js",
         libraryTarget: "commonjs2",
     },

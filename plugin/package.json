@@ -1,5 +1,6 @@
 {
     "name": "cypress-api-mock-plugin",
     "description": "Internal plugin package",
-    "main": "apiMock"
+    "main": "dist/apiMock",
+    "types": "apiMock.d.ts"
 }

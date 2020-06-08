@@ -131,3 +131,5 @@ async function getRequestData(req: http.IncomingMessage): Promise<string> {
 function log(message?: any, ...optionalParams: any[]): void {
     console.log("API-MOCK", message, ...optionalParams, "\x1b[0m");
 }
+
+module.exports = register;
