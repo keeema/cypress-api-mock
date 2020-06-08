@@ -1,4 +1,4 @@
-interface IApiMockConfiguration extends Cypress.ConfigOptions {
+interface IApiMockConfiguration extends Partial<Cypress.ConfigOptions> {
     apiMockServer: {
         hostname: string;
         hostPort: number;
