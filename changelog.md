@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.0] - 2020-06-18
+
+### Add
+
+-   invalid calls handling
+
 ## [1.1.0] - 2020-06-08
 
 ### Change

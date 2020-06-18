@@ -1,4 +1,5 @@
 // plugins file
+
 import webpackPreprocessor = require("@cypress/webpack-preprocessor");
 import cfg = require("../../webpack.config");
 import apiMock from "../../plugin";

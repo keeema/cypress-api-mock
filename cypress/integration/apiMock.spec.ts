@@ -5,6 +5,7 @@ describe("cypress api-mock", () => {
     const testApiResponse = '{"id":${body.id},"message":"Hello ${body.name}!"}';
     const testApiExpectedResponse = `{"id":10,"message":"Hello Simon!"}`;
     const testApiRequestBody = JSON.stringify({ id: 10, name: "Simon" });
+    const testApiRequestBodyInvalid = "{";
     const dummyUrl = "/dummy-api";
 
     beforeEach(() => cy.apiMockReset());
@@ -24,5 +25,13 @@ describe("cypress api-mock", () => {
             .should("equal", 404);
 
         cy.apiMockRequests().should((requests) => expect(requests[dummyUrl]).not.exist);
+    });
+
+    it("should return 500 for invalid calls", () => {
+        cy.apiMock(testApiUrl, testApiResponse);
+
+        cy.request({ url: `localhost:3000${testApiUrl}`, body: testApiRequestBodyInvalid, failOnStatusCode: false })
+            .its("status")
+            .should("equal", 500);
     });
 });

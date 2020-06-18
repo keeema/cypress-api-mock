@@ -6,7 +6,10 @@ import * as http from "http";
 const paramRegex = /\$\{(?![0-9])[.a-zA-Z0-9$_]+\}/gm;
 
 function register(on: Cypress.PluginEvents, config?: Partial<IApiMockConfiguration>): void {
-    const fullConfig: IApiMockConfiguration = Object.assign({ apiMockServer: { hostname: "127.0.0.1", hostPort: 3000 } }, config);
+    const fullConfig: IApiMockConfiguration = Object.assign<IApiMockConfiguration, Partial<IApiMockConfiguration> | undefined>(
+        { apiMockServer: { hostname: "127.0.0.1", hostPort: 3000 } },
+        config
+    );
 
     startServer(fullConfig);
     on("task", {
@@ -49,13 +52,17 @@ function registerMock(pattern: string, response: string | Object): null {
 }
 function startServer(config: IApiMockConfiguration): void {
     const server = http.createServer(async (req, res) => {
-        const body = await processRequest(req);
-        if (req.url !== undefined && mocks.has(req.url)) {
-            const answer = prepareAnswer(req.url, body);
-            registerCall(req.url, answer);
-            answerOK(res, answer);
-        } else {
-            answerNotFound(res);
+        try {
+            const body = await processRequest(req);
+            if (req.url !== undefined && mocks.has(req.url)) {
+                const answer = prepareAnswer(req.url, body);
+                registerCall(req.url, answer);
+                answerOK(res, answer);
+            } else {
+                answerNotFound(res);
+            }
+        } catch {
+            answerError(res);
         }
     });
 
@@ -77,8 +84,14 @@ function prepareAnswer(url: string, body: string): string {
 function parseParameters(answer: string | object, body: string): string {
     const answerStr = typeof answer === "string" ? answer : JSON.stringify(answer);
     const regex = new RegExp(paramRegex);
-    const bodyObj = JSON.parse(body);
-    return answerStr.replace(regex, (match) => getParamValue(bodyObj, match));
+
+    let bodyObj: object;
+    return answerStr.replace(regex, (match) => {
+        if (bodyObj === undefined) {
+            bodyObj = JSON.parse(body);
+        }
+        return getParamValue(bodyObj, match);
+    });
 }
 
 function getParamValue(bodyObj: object, param: string): string {
@@ -115,6 +128,14 @@ function answerNotFound(res: http.ServerResponse): void {
     res.statusCode = 404;
     res.setHeader("Content-Type", "text/plain");
     res.end("Mock not found");
+
+    log("\x1b[31m" + `<- Status: ${res.statusCode}`);
+}
+
+function answerError(res: http.ServerResponse): void {
+    res.statusCode = 500;
+    res.setHeader("Content-Type", "text/plain");
+    res.end("Internal Server Error. Problem in creating response.");
 
     log("\x1b[31m" + `<- Status: ${res.statusCode}`);
 }
