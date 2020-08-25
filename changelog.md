@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.0] - 2020-08-28
+
+### Change
+
+-   Update cypress@5.0.0 and typescript@4.0.2
+
 ## [1.2.0] - 2020-06-18
 
 ### Add

@@ -20,7 +20,7 @@ function register(on: Cypress.PluginEvents, config?: Partial<IApiMockConfigurati
     });
 }
 
-export default register;
+export = register;
 
 const mocks = new Map<string, string | Object>();
 const calls = new Map<string, string[]>();
