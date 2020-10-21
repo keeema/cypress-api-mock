@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.0.0] - 2020-10-21
+
+### Change
+
+-   Add complex type for requests assertion
+
+## [3.0.0] - 2020-10-21
+
+### Change
+
+-   Separate assertion for responses and requests
+
 ## [2.0.0] - 2020-08-28
 
 ### Change

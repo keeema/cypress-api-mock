@@ -18,9 +18,9 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
     "apiMockRequests",
-    (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<Map<string, string[]>> => {
+    (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<Map<string, IApiMockRequestData[]>> => {
         Cypress.log({});
-        return cy.task("api-mock:get-requests", options, { log: false }).then((requests) => (requests as any) as Map<string, string[]>);
+        return cy.task("api-mock:get-requests", options, { log: false }).then((requests) => (requests as any) as Map<string, IApiMockRequestData[]>);
     }
 );
 

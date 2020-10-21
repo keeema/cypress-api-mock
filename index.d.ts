@@ -14,7 +14,7 @@ declare namespace Cypress {
          * Retrieve list of requests.
          * @returns dictionary object with with url pattern as a key and list of request as a value
          */
-        apiMockRequests(options?: Partial<Cypress.Timeoutable>): Cypress.Chainable<{ [key: string]: string[] }>;
+        apiMockRequests(options?: Partial<Cypress.Timeoutable>): Cypress.Chainable<{ [key: string]: IApiMockRequestData[] }>;
         /**
          * Retrieve list of responses.
          * @returns dictionary object with with url pattern as a key and list of responses as a value

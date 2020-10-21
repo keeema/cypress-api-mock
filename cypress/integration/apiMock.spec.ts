@@ -16,7 +16,7 @@ describe("cypress api-mock", () => {
         cy.request(`localhost:3000${testApiUrl}`, testApiRequestBody).its("body").should("include", testApiExpectedResponse);
 
         cy.apiMockRequests().should((requests) => expect(requests[testApiUrl]).exist);
-        cy.apiMockRequests().should((requests) => expect(requests[testApiUrl][0]).to.eq(testApiRequestBody));
+        cy.apiMockRequests().should((requests) => expect(requests[testApiUrl][0].data).to.eq(testApiRequestBody));
         cy.apiMockResponses().should((requests) => expect(requests[testApiUrl][0]).to.eq(testApiExpectedResponse));
         cy.apiMockRequests().should((requests) => expect(requests["/not-called-api"]).not.exist);
     });

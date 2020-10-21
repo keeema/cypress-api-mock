@@ -2,6 +2,8 @@
 /// <reference types="cypress" />
 
 import * as http from "http";
+import * as multiparty from "multiparty";
+import * as fs from "fs";
 
 const paramRegex = /\$\{(?![0-9])[.a-zA-Z0-9$_]+\}/gm;
 
@@ -14,7 +16,7 @@ function register(on: Cypress.PluginEvents, config?: Partial<IApiMockConfigurati
     startServer(fullConfig);
     on("task", {
         "api-mock:register": (options: IApiMockOptions): null => registerMock(options.pattern, options.response),
-        "api-mock:get-requests": (): { [key: string]: string[] } => getRequests(),
+        "api-mock:get-requests": (): { [key: string]: IApiMockRequestData[] } => getRequests(),
         "api-mock:get-responses": (): { [key: string]: string[] } => getResponses(),
         "api-mock:reset-calls": (): null => resetCalls(),
         "api-mock:reset": (): null => reset(),
@@ -24,11 +26,11 @@ function register(on: Cypress.PluginEvents, config?: Partial<IApiMockConfigurati
 export = register;
 
 const mocks = new Map<string, string | Object>();
-const requests = new Map<string, string[]>();
+const requests = new Map<string, IApiMockRequestData[]>();
 const responses = new Map<string, string[]>();
 
-function getRequests(): { [key: string]: string[] } {
-    const result: { [key: string]: string[] } = {};
+function getRequests(): { [key: string]: IApiMockRequestData[] } {
+    const result: { [key: string]: IApiMockRequestData[] } = {};
     requests.forEach((value, key) => {
         if (result !== undefined) {
             result[key] = value;
@@ -68,7 +70,7 @@ function startServer(config: IApiMockConfiguration): void {
         try {
             const body = await processRequest(req);
             if (req.url !== undefined && mocks.has(req.url)) {
-                const answer = prepareAnswer(req.url, body);
+                const answer = prepareAnswer(req.url, body.data);
                 registerCall(req.url, body, answer);
                 answerOK(res, answer);
             } else {
@@ -84,7 +86,7 @@ function startServer(config: IApiMockConfiguration): void {
     });
 }
 
-function registerCall(url: string, request:string, response: string): void {
+function registerCall(url: string, request:IApiMockRequestData, response: string): void {
     const particularRequests = requests.get(url) || [];
     particularRequests.push(request);
 
@@ -129,9 +131,9 @@ function getParamValue(bodyObj: object, param: string): string {
     }
 }
 
-async function processRequest(req: http.IncomingMessage): Promise<string> {
+async function processRequest(req: http.IncomingMessage): Promise<IApiMockRequestData> {
     const data = await getRequestData(req);
-    log(`-> URL: ${req.url} Data: ${data}`);
+    log(`-> URL: ${req.url} Data: ${data.data}`);
     return data;
 }
 
@@ -158,14 +160,37 @@ function answerError(res: http.ServerResponse): void {
     log("\x1b[31m" + `<- Status: ${res.statusCode}`);
 }
 
-async function getRequestData(req: http.IncomingMessage): Promise<string> {
-    return new Promise<string>((resolve) => {
+async function getRequestData(req: http.IncomingMessage): Promise<IApiMockRequestData> {
+    return new Promise<IApiMockRequestData>((resolve) => {
         let allData = "";
+        var form = new multiparty.Form({autoFiles: true});
+        const fileResult:IApiMockFileInfoWithContent[] = [];
+        let fieldsResult:any;
+        
+        form.parse(req, function(_err:any, fields:any, files:IApiMockFileInfos) {
+            fieldsResult = fields;
+            if(files){
+                for(const key in files) {
+                    const file = files[key][0];
+                    fileResult.push({
+                        ...file,
+                        content: Array.from(fs.readFileSync(file.path))
+                    })
+                }
+            }
+            
+        });
 
         req.on("data", (data: any) => (allData += data));
-        req.on("end", () => resolve(allData));
+        
+        req.on("end", () => resolve({ 
+            files:fileResult,
+            fields: fieldsResult,
+            data:allData
+        }));
     });
 }
+
 
 function log(message?: any, ...optionalParams: any[]): void {
     console.log("API-MOCK", message, ...optionalParams, "\x1b[0m");

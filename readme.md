@@ -52,7 +52,7 @@ cy.apiMock("/test-api", '{"id":${body.id},"message":"Hello ${body.name}!"}');
 ### Assertion
 
 ```tsx
-cy.apiMockRequests().should((requests) => expect(requests[testApiUrl][0]).to.eq(testApiRequestBody));
+cy.apiMockRequests().should((requests) => expect(requests[testApiUrl][0].data).to.eq(testApiRequestBody));
 cy.apiMockResponses().should((requests) => expect(requests[testApiUrl][0]).to.eq(testApiExpectedResponse));
 ```
 
