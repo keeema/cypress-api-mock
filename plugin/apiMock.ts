@@ -14,7 +14,8 @@ function register(on: Cypress.PluginEvents, config?: Partial<IApiMockConfigurati
     startServer(fullConfig);
     on("task", {
         "api-mock:register": (options: IApiMockOptions): null => registerMock(options.pattern, options.response),
-        "api-mock:get-calls": (): { [key: string]: string[] } => getCalls(),
+        "api-mock:get-requests": (): { [key: string]: string[] } => getRequests(),
+        "api-mock:get-responses": (): { [key: string]: string[] } => getResponses(),
         "api-mock:reset-calls": (): null => resetCalls(),
         "api-mock:reset": (): null => reset(),
     });
@@ -23,11 +24,22 @@ function register(on: Cypress.PluginEvents, config?: Partial<IApiMockConfigurati
 export = register;
 
 const mocks = new Map<string, string | Object>();
-const calls = new Map<string, string[]>();
+const requests = new Map<string, string[]>();
+const responses = new Map<string, string[]>();
 
-function getCalls(): { [key: string]: string[] } {
+function getRequests(): { [key: string]: string[] } {
     const result: { [key: string]: string[] } = {};
-    calls.forEach((value, key) => {
+    requests.forEach((value, key) => {
+        if (result !== undefined) {
+            result[key] = value;
+        }
+    });
+    return result;
+}
+
+function getResponses(): { [key: string]: string[] } {
+    const result: { [key: string]: string[] } = {};
+    responses.forEach((value, key) => {
         if (result !== undefined) {
             result[key] = value;
         }
@@ -36,7 +48,8 @@ function getCalls(): { [key: string]: string[] } {
 }
 
 function resetCalls(): null {
-    calls.clear();
+    requests.clear();
+    responses.clear();
     return null;
 }
 
@@ -56,7 +69,7 @@ function startServer(config: IApiMockConfiguration): void {
             const body = await processRequest(req);
             if (req.url !== undefined && mocks.has(req.url)) {
                 const answer = prepareAnswer(req.url, body);
-                registerCall(req.url, answer);
+                registerCall(req.url, body, answer);
                 answerOK(res, answer);
             } else {
                 answerNotFound(res);
@@ -71,10 +84,15 @@ function startServer(config: IApiMockConfiguration): void {
     });
 }
 
-function registerCall(url: string, answer: string): void {
-    const particularCalls = calls.get(url) || [];
-    particularCalls.push(answer);
-    calls.set(url, particularCalls);
+function registerCall(url: string, request:string, response: string): void {
+    const particularRequests = requests.get(url) || [];
+    particularRequests.push(request);
+
+    const particularResponses = responses.get(url) || [];
+    particularResponses.push(response);
+
+    requests.set(url, particularRequests)
+    responses.set(url, particularResponses);
 }
 function prepareAnswer(url: string, body: string): string {
     const answer = mocks.get(url) || "";

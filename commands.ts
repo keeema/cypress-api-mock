@@ -20,12 +20,20 @@ Cypress.Commands.add(
     "apiMockRequests",
     (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<Map<string, string[]>> => {
         Cypress.log({});
-        return cy.task("api-mock:get-calls", options, { log: false }).then((requests) => (requests as any) as Map<string, string[]>);
+        return cy.task("api-mock:get-requests", options, { log: false }).then((requests) => (requests as any) as Map<string, string[]>);
     }
 );
 
 Cypress.Commands.add(
-    "apiMockResetRequests",
+    "apiMockResponses",
+    (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<Map<string, string[]>> => {
+        Cypress.log({});
+        return cy.task("api-mock:get-responses", options, { log: false }).then((requests) => (requests as any) as Map<string, string[]>);
+    }
+);
+
+Cypress.Commands.add(
+    "apiMockResetCalls",
     (): Cypress.Chainable<void> => {
         Cypress.log({});
         return (cy.task("api-mock:reset-calls", undefined, { log: false }) as any) as Cypress.Chainable<void>;

@@ -12,11 +12,16 @@ declare namespace Cypress {
         apiMock(pattern: string, response: string | Object): Cypress.Chainable<null>;
         /**
          * Retrieve list of requests.
+         * @returns dictionary object with with url pattern as a key and list of request as a value
+         */
+        apiMockRequests(options?: Partial<Cypress.Timeoutable>): Cypress.Chainable<{ [key: string]: string[] }>;
+        /**
+         * Retrieve list of responses.
          * @returns dictionary object with with url pattern as a key and list of responses as a value
          */
-        apiMockRequests(options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<{ [key: string]: string[] }>;
-        /* Reset list of received requests.*/
-        apiMockResetRequests(): Cypress.Chainable<null>;
+        apiMockResponses(options?: Partial<Cypress.Timeoutable>): Cypress.Chainable<{ [key: string]: string[] }>;
+        /* Reset list of received requests and responses.*/
+        apiMockResetCalls(): Cypress.Chainable<null>;
         /* Reset mock registrations and list of received requests.*/
         apiMockReset(): Cypress.Chainable<null>;
     }

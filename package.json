@@ -1,6 +1,6 @@
 {
     "name": "cypress-api-mock",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "description": "Cypress plugin for mocking API",
     "main": "index",
     "scripts": {

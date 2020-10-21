@@ -37,10 +37,10 @@ It is highly recommended to reset the plugin before every suite to remove all pr
 beforeEach(() => cy.apiMockReset());
 ```
 
-You can also reset the log of requests during the test suite.
+You can also reset the log of requests and responses during the test suite.
 
 ```tsx
-cy.apiMockResetRequests();
+cy.apiMockResetCalls();
 ```
 
 ### Mock specific API
@@ -52,7 +52,8 @@ cy.apiMock("/test-api", '{"id":${body.id},"message":"Hello ${body.name}!"}');
 ### Assertion
 
 ```tsx
-cy.apiMockRequests().should((requests) => expect(requests["/test-api"]).exist);
+cy.apiMockRequests().should((requests) => expect(requests[testApiUrl][0]).to.eq(testApiRequestBody));
+cy.apiMockResponses().should((requests) => expect(requests[testApiUrl][0]).to.eq(testApiExpectedResponse));
 ```
 
 ## How to Develope
