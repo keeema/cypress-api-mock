@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.1.1] - 2020-12-02
+
+-   Upgrade webpack@5.9.0
+
 ## [4.1.0] - 2020-12-02
 
 -   Upgrade cypress@6.0.1 and typescript@4.1.2
