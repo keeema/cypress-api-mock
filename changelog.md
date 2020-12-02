@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.1.0] - 2020-12-02
+
+-   Upgrade cypress@6.0.1 and typescript@4.1.2
+
 ## [4.0.0] - 2020-10-21
 
 ### Change
