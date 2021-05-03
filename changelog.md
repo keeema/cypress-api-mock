@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.0.0] - 2021-03-05
+
+-   Upgrade cypress@7.0.0
+
 ## [4.1.1] - 2020-12-02
 
 -   Upgrade webpack@5.9.0
