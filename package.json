@@ -1,6 +1,6 @@
 {
     "name": "cypress-api-mock",
-    "version": "5.0.0",
+    "version": "5.1.0",
     "description": "Cypress plugin for mocking API",
     "main": "index",
     "scripts": {
@@ -14,12 +14,12 @@
     },
     "dependencies": {
         "@types/multiparty": "^0.0.32",
-        "cypress": "^7.0.0",
+        "cypress": "^7.2.0",
         "multiparty": "^4.2.2"
     },
     "devDependencies": {
         "@cypress/webpack-preprocessor": "^5.5.0",
-        "@types/node": "^13.7.7",
+        "@types/node": "^14.0.11",
         "@types/webpack": "^4.41.25",
         "@typescript-eslint/eslint-plugin": "^2.0.0",
         "@typescript-eslint/parser": "^2.0.0",

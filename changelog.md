@@ -1,5 +1,10 @@
 # Changelog
 
+## [5.1.0] - 2021-06-20
+
+-   Upgrade cypress@7.5.0
+-   Add logs
+
 ## [5.0.0] - 2021-03-05
 
 -   Upgrade cypress@7.0.0

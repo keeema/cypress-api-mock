@@ -11,26 +11,26 @@ interface IApiMockOptions {
 }
 
 interface IApiMockFileInfos {
-    [key:string]:IApiMockFileInfo[]
+    [key: string]: IApiMockFileInfo[];
 }
 
 interface IApiMockFileInfo {
-   fieldName:string,
-    originalFilename:string,
-    path:string,
-    headers:{
-        "content-disposition":string,
-        "content-type":string
-    },
-    size :number
+    fieldName: string;
+    originalFilename: string;
+    path: string;
+    headers: {
+        "content-disposition": string;
+        "content-type": string;
+    };
+    size: number;
 }
 
 interface IApiMockFileInfoWithContent extends IApiMockFileInfo {
-   content: number[];
+    content: number[];
 }
 
 interface IApiMockRequestData {
     data: string;
     fields?: any;
-    files: IApiMockFileInfoWithContent[]
+    files: IApiMockFileInfoWithContent[];
 }

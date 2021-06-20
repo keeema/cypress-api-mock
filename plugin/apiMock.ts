@@ -1,11 +1,15 @@
 /// <reference path="common.d.ts" />
-/// <reference types="cypress" />
 
 import * as http from "http";
 import * as multiparty from "multiparty";
 import * as fs from "fs";
+import * as path from "path";
 
 const paramRegex = /\$\{(?![0-9])[.a-zA-Z0-9$_]+\}/gm;
+const apiMockLogsFolderPath = path.resolve("cypress/api-mock-logs");
+const testTimestamp = new Date().toISOString().replace(/(:)|(\.)/g, "-");
+const guid = uuid();
+const apiMockLogsPath = path.resolve(`${apiMockLogsFolderPath}/${testTimestamp}-${guid}.log`);
 
 function register(on: Cypress.PluginEvents, config?: Partial<IApiMockConfiguration>): void {
     const fullConfig: IApiMockConfiguration = Object.assign<IApiMockConfiguration, Partial<IApiMockConfiguration> | undefined>(
@@ -22,8 +26,6 @@ function register(on: Cypress.PluginEvents, config?: Partial<IApiMockConfigurati
         "api-mock:reset": (): null => reset(),
     });
 }
-
-export = register;
 
 const mocks = new Map<string, string | Object>();
 const requests = new Map<string, IApiMockRequestData[]>();
@@ -82,18 +84,18 @@ function startServer(config: IApiMockConfiguration): void {
     });
 
     server.listen(config.apiMockServer.hostPort, config.apiMockServer.hostname, () => {
-        log(`Server running at http://${config.apiMockServer.hostname}:${config.apiMockServer.hostPort}/`);
+        log(`I\tServer running at http://${config.apiMockServer.hostname}:${config.apiMockServer.hostPort}/`);
     });
 }
 
-function registerCall(url: string, request:IApiMockRequestData, response: string): void {
+function registerCall(url: string, request: IApiMockRequestData, response: string): void {
     const particularRequests = requests.get(url) || [];
     particularRequests.push(request);
 
     const particularResponses = responses.get(url) || [];
     particularResponses.push(response);
 
-    requests.set(url, particularRequests)
+    requests.set(url, particularRequests);
     responses.set(url, particularResponses);
 }
 function prepareAnswer(url: string, body: string): string {
@@ -117,23 +119,23 @@ function parseParameters(answer: string | object, body: string): string {
 function getParamValue(bodyObj: object, param: string): string {
     try {
         const cleanParam = param.substr(2, param.length - 3);
-        const path = cleanParam.split(".");
+        const paramPath = cleanParam.split(".");
         let result: any = bodyObj;
-        for (const part of path) {
+        for (const part of paramPath) {
             if (part !== "body") {
                 result = result[part];
             }
         }
         return result ? result.toString() : result;
     } catch (err) {
-        log("\x1b[31m" + `Error in parsing param '${param}':  ${err}`);
+        log(`E\tError in parsing param '${param}':  ${err}`, "\x1b[31m");
         return "error";
     }
 }
 
 async function processRequest(req: http.IncomingMessage): Promise<IApiMockRequestData> {
     const data = await getRequestData(req);
-    log(`-> URL: ${req.url} Data: ${data.data}`);
+    log(`->\tURL: ${req.url}\tData: ${data.data}`);
     return data;
 }
 
@@ -141,7 +143,7 @@ function answerOK(res: http.ServerResponse, mockResult: string): void {
     res.statusCode = 200;
     res.setHeader("Content-Type", "text/plain");
     res.end(mockResult);
-    log("\x1b[32m" + `<- Status: ${res.statusCode} Response:${mockResult}`);
+    log(`<-\tStatus: ${res.statusCode}\tResponse:${mockResult}`, "\x1b[32m");
 }
 
 function answerNotFound(res: http.ServerResponse): void {
@@ -149,7 +151,7 @@ function answerNotFound(res: http.ServerResponse): void {
     res.setHeader("Content-Type", "text/plain");
     res.end("Mock not found");
 
-    log("\x1b[31m" + `<- Status: ${res.statusCode}`);
+    log(`<-\tStatus: ${res.statusCode}`, "\x1b[31m");
 }
 
 function answerError(res: http.ServerResponse): void {
@@ -157,43 +159,60 @@ function answerError(res: http.ServerResponse): void {
     res.setHeader("Content-Type", "text/plain");
     res.end("Internal Server Error. Problem in creating response.");
 
-    log("\x1b[31m" + `<- Status: ${res.statusCode}`);
+    log(`<-\tStatus: ${res.statusCode}`, "\x1b[31m");
 }
 
 async function getRequestData(req: http.IncomingMessage): Promise<IApiMockRequestData> {
     return new Promise<IApiMockRequestData>((resolve) => {
         let allData = "";
-        var form = new multiparty.Form({autoFiles: true});
-        const fileResult:IApiMockFileInfoWithContent[] = [];
-        let fieldsResult:any;
-        
-        form.parse(req, function(_err:any, fields:any, files:IApiMockFileInfos) {
+        const form = new multiparty.Form({ autoFiles: true });
+        const fileResult: IApiMockFileInfoWithContent[] = [];
+        let fieldsResult: any;
+
+        form.parse(req, function (_err: any, fields: any, files: IApiMockFileInfos) {
             fieldsResult = fields;
-            if(files){
-                for(const key in files) {
+            if (files) {
+                for (const key in files) {
                     const file = files[key][0];
                     fileResult.push({
                         ...file,
-                        content: Array.from(fs.readFileSync(file.path))
-                    })
+                        content: Array.from(fs.readFileSync(file.path)),
+                    });
                 }
             }
-            
         });
 
         req.on("data", (data: any) => (allData += data));
-        
-        req.on("end", () => resolve({ 
-            files:fileResult,
-            fields: fieldsResult,
-            data:allData
-        }));
+
+        req.on("end", () =>
+            resolve({
+                files: fileResult,
+                fields: fieldsResult,
+                data: allData,
+            })
+        );
     });
 }
 
-
-function log(message?: any, ...optionalParams: any[]): void {
-    console.log("API-MOCK", message, ...optionalParams, "\x1b[0m");
+function log(message: string, color: string = "\x1b[0m"): void {
+    console.log("API-MOCK", "\t", color, message, "\x1b[0m");
+    writeFileLog(message);
 }
 
-module.exports = register;
+function uuid(): string {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+        const r = (Math.random() * 16) | 0,
+            v = c === "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+    });
+}
+
+function writeFileLog(message: string): void {
+    const timestamp = new Date().toISOString();
+    if (!fs.existsSync(apiMockLogsFolderPath)) {
+        fs.mkdirSync(apiMockLogsFolderPath);
+    }
+    fs.appendFileSync(apiMockLogsPath, `${timestamp}\t${message}\n`);
+}
+
+export = register;
