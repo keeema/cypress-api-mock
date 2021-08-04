@@ -32,6 +32,7 @@ const requests = new Map<string, IApiMockRequestData[]>();
 const responses = new Map<string, string[]>();
 
 function getRequests(): { [key: string]: IApiMockRequestData[] } {
+    log(`I\tRetrieving requests`, "\x1b[33m");
     const result: { [key: string]: IApiMockRequestData[] } = {};
     requests.forEach((value, key) => {
         if (result !== undefined) {
@@ -42,6 +43,7 @@ function getRequests(): { [key: string]: IApiMockRequestData[] } {
 }
 
 function getResponses(): { [key: string]: string[] } {
+    log(`I\tRetrieving responses`, "\x1b[33m");
     const result: { [key: string]: string[] } = {};
     responses.forEach((value, key) => {
         if (result !== undefined) {
@@ -52,18 +54,21 @@ function getResponses(): { [key: string]: string[] } {
 }
 
 function resetCalls(): null {
+    log(`I\tCalls reset`, "\x1b[33m");
     requests.clear();
     responses.clear();
     return null;
 }
 
 function reset(): null {
+    log(`I\tComplete mock reset`, "\x1b[33m");
     resetCalls();
     mocks.clear();
     return null;
 }
 
 function registerMock(pattern: string, response: string | Object): null {
+    log(`I\tMock registration for:\t${pattern}`, "\x1b[33m");
     mocks.set(pattern, response);
     return null;
 }
@@ -84,7 +89,7 @@ function startServer(config: IApiMockConfiguration): void {
     });
 
     server.listen(config.apiMockServer.hostPort, config.apiMockServer.hostname, () => {
-        log(`I\tServer running at http://${config.apiMockServer.hostname}:${config.apiMockServer.hostPort}/`);
+        log(`I\tServer running at http://${config.apiMockServer.hostname}:${config.apiMockServer.hostPort}/`, "\x1b[33m");
     });
 }
 
@@ -135,7 +140,7 @@ function getParamValue(bodyObj: object, param: string): string {
 
 async function processRequest(req: http.IncomingMessage): Promise<IApiMockRequestData> {
     const data = await getRequestData(req);
-    log(`->\tURL: ${req.url}\tData: ${data.data}`);
+    log(`->\tURL: ${req.url}\tData: ${data.data}`, "\x1b[36m");
     return data;
 }
 

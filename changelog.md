@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.1.1] - 2021-08-04
+
+-   Add new logs and colors
+
 ## [5.1.0] - 2021-06-20
 
 -   Upgrade cypress@7.5.0
