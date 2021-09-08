@@ -1,6 +1,7 @@
 # cypress-api-mock
 
-Cypress task plugin with commands for mocking API. It runs its own http server and returns registered responses.
+Cypress plugin with commands for mocking API. It runs its own http server locally and returns registered responses.
+Http server can be started separately on remote machine if needed.
 
 ## Adding to project
 
@@ -38,6 +39,7 @@ beforeEach(() => cy.apiMockReset());
 ```
 
 You can also reset the log of requests and responses during the test suite.
+Requests, responses and mocks older then 5 minutes are deleted in 10 minutes interval by default.
 
 ```tsx
 cy.apiMockResetCalls();
@@ -60,8 +62,16 @@ cy.apiMockResponses().should((requests) => expect(requests[testApiUrl][0]).to.eq
 
 To build plugin run webpack with specific config:
 
+For running server locally when cypress is started
+
 ```bash
 npx webpack --config webpack.config.plugin.ts -w
+```
+
+For running server remotely
+
+```bash
+npx webpack --config webpack.config.server.ts -w
 ```
 
 and then run cypress:

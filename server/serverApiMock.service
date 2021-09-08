@@ -1,0 +1,15 @@
+[Unit]
+Description=Cypress api stub
+
+[Service]
+PermissionsStartOnly=true
+ExecStartPre=/bin/mkdir -p /home/spravce/ApiMock/cypress/api-mock-logs
+ExecStart=/home/spravce/ApiMock/apiMock.js
+Restart=always
+User=nobody
+Group=nogroup
+WorkingDirectory=/home/spravce/ApiMock
+
+[Install]
+WantedBy=multi-user.target
+Alias=cypress-stub.service
