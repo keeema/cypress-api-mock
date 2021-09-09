@@ -1,5 +1,5 @@
 import { constants } from "../constants";
-import { startAutoClearing, startServer } from "../server";
+import { startServer } from "../server";
 
 function register(_: Cypress.PluginEvents, config?: Partial<IApiMockConfiguration>): void {
     const fullConfig: IApiMockConfiguration = Object.assign<IApiMockConfiguration, Partial<IApiMockConfiguration> | undefined>(
@@ -8,7 +8,6 @@ function register(_: Cypress.PluginEvents, config?: Partial<IApiMockConfiguratio
     );
 
     startServer(fullConfig);
-    startAutoClearing();
 }
 
 export = register;

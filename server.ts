@@ -10,37 +10,20 @@ const testTimestamp = new Date().toISOString().replace(/(:)|(\.)/g, "-");
 const guid = uuid();
 const apiMockLogsPath = path.resolve(`${apiMockLogsFolderPath}/${testTimestamp}-${guid}.log`);
 
-class ServerData<TData> {
-    data: TData;
-    timestamp: number;
+const mocks = new Map<string, string | Object>();
+const requests = new Map<string, IApiMockRequestData[]>();
+const responses = new Map<string, string[]>();
 
-    constructor(data: TData, timestamp: number) {
-        this.data = data;
-        this.timestamp = timestamp;
-    }
-}
-
-const mocks = new Map<string, ServerData<string | Object>>();
-const requests = new Map<string, ServerData<IApiMockRequestData[]>>();
-const responses = new Map<string, ServerData<string[]>>();
-
-export function startAutoClearing(): void {
-    const oneMin = 60000;
-    setInterval(() => {
-        resetCalls();
-    }, 10 * oneMin);
-
-    setInterval(() => {
-        resetMock();
-    }, 20 * oneMin);
-}
+let deleteTimeout: NodeJS.Timeout;
 
 export function startServer(config: IApiMockConfiguration): void {
+    //Todo delete
+    setInterval(() => log(`Server on ${config.apiMockServer.hostname}:${config.apiMockServer.hostPort} is alive`, "\x1b[33m"), 15 * 1000);
     const server = http.createServer(async (req, res) => {
         log(`Server received url: ${req.url}`, "\x1b[33m");
         try {
             switch (req.url) {
-                //Todo delete
+                // Todo delete
                 case "/testIfRunning": {
                     res.writeHead(200, { "Content-Type": "text/plain" });
                     res.end("Server is running!\n");
@@ -48,6 +31,7 @@ export function startServer(config: IApiMockConfiguration): void {
                 }
                 case constants.Paths.registerMock: {
                     const options = JSON.parse((await processRequest(req)).data) as IApiMockOptions;
+                    setNewDeleteTimeout();
                     registerMock(options.pattern, options.response);
                     answerOK(res);
                     break;
@@ -84,12 +68,20 @@ export function startServer(config: IApiMockConfiguration): void {
     });
 }
 
+function setNewDeleteTimeout(): void {
+    if (deleteTimeout !== undefined) {
+        clearTimeout(deleteTimeout);
+    }
+
+    deleteTimeout = setTimeout(() => reset(), 5 * 60000);
+}
+
 function getRequests(): { [key: string]: IApiMockRequestData[] } {
     log(`I\tRetrieving requests`, "\x1b[33m");
     const result: { [key: string]: IApiMockRequestData[] } = {};
     requests.forEach((value, key) => {
         if (result !== undefined) {
-            result[key] = value.data;
+            result[key] = value;
         }
     });
     return result;
@@ -100,7 +92,7 @@ function getResponses(): { [key: string]: string[] } {
     const result: { [key: string]: string[] } = {};
     responses.forEach((value, key) => {
         if (result !== undefined) {
-            result[key] = value.data;
+            result[key] = value;
         }
     });
     return result;
@@ -110,24 +102,10 @@ function resetCalls(): void {
     log(`I\tCalls reset`, "\x1b[33m");
     requests.clear();
     responses.clear();
-
-    deleteOlderThen(requests, constants.DeleteDataOlderThenInMinutes);
-    deleteOlderThen(responses, constants.DeleteDataOlderThenInMinutes);
-}
-
-function deleteOlderThen<TData>(source: Map<string, ServerData<TData>>, minutes: number): void {
-    const minutesInSeconds = minutes * 60000;
-
-    source.forEach((value, key) => {
-        if (value.timestamp + minutesInSeconds < Date.now()) {
-            source.delete(key);
-        }
-    });
 }
 
 function resetMock(): void {
     log(`I\tMock reset`, "\x1b[33m");
-    deleteOlderThen(mocks, constants.DeleteDataOlderThenInMinutes);
     mocks.clear();
 }
 
@@ -139,7 +117,7 @@ function reset(): void {
 
 function registerMock(pattern: string, response: string | Object): null {
     log(`I\tMock registration for:\t${pattern} with response: ${response}`, "\x1b[33m");
-    mocks.set(pattern, new ServerData(response, Date.now()));
+    mocks.set(pattern, response);
     return null;
 }
 
@@ -158,15 +136,14 @@ async function ProcessApiRequest(req: any, res: any): Promise<void> {
 
 function registerCall(url: string, request: IApiMockRequestData, response: string): void {
     log(`I\tRegistering call for url:${url}, with request ${request.data} and response ${response}`, "\x1b[33m");
-    const particularRequests = requests.get(url)?.data || [];
+    const particularRequests = requests.get(url) || [];
     particularRequests.push(request);
 
-    const particularResponses = responses.get(url)?.data || [];
+    const particularResponses = responses.get(url) || [];
     particularResponses.push(response);
 
-    const timestamp = Date.now();
-    requests.set(url, new ServerData(particularRequests, timestamp));
-    responses.set(url, new ServerData(particularResponses, timestamp));
+    requests.set(url, particularRequests);
+    responses.set(url, particularResponses);
 }
 
 function prepareAnswer(url: string, body: string): string {
