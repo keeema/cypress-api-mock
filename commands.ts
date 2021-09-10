@@ -7,12 +7,19 @@ Cypress.Commands.add(
     (
         pattern: string,
         response: string | Object,
-        serverAddressWithPort: string = `127.0.0.1:${constants.Port}`
+        serverAddressWithPort: string = `127.0.0.1:${constants.Port}`,
+        options: Partial<Cypress.Timeoutable> = {}
     ): Cypress.Chainable<void> => {
         Cypress.log({ message: [pattern] });
-        const options: IApiMockOptions = { pattern, response };
+        const data: IApiMockOptions = { pattern, response };
         return (cy
-            .request("POST", `${serverAddressWithPort}${constants.Paths.registerMock}`, options)
+            .request({
+                log: false,
+                timeout: options?.timeout,
+                method: "POST",
+                url: `${serverAddressWithPort}${constants.Paths.registerMock}`,
+                body: data,
+            })
             .then(() => {}) as any) as Cypress.Chainable<void>;
     }
 );
@@ -24,8 +31,13 @@ Cypress.Commands.add(
         options: Partial<Cypress.Timeoutable> = {}
     ): Cypress.Chainable<Map<string, IApiMockRequestData[]>> => {
         return cy
-            .request(`${serverAddressWithPort}${constants.Paths.getRequests}`, options)
-            .then((response) => (response.body as any) as Map<string, IApiMockRequestData[]>);
+            .request<Map<string, IApiMockRequestData[]>>({
+                log: false,
+                timeout: options.timeout,
+                url: `${serverAddressWithPort}${constants.Paths.getRequests}`,
+                body: options, //????
+            })
+            .then((response) => response.body);
     }
 );
 
@@ -36,21 +48,40 @@ Cypress.Commands.add(
         options: Partial<Cypress.Timeoutable> = {}
     ): Cypress.Chainable<Map<string, string[]>> => {
         return cy
-            .request(`${serverAddressWithPort}${constants.Paths.getResponses}`, options)
-            .then((response) => (response.body as any) as Map<string, string[]>);
+            .request<Map<string, string[]>>({
+                log: false,
+                timeout: options.timeout,
+                url: `${serverAddressWithPort}${constants.Paths.getResponses}`,
+                body: options,
+            })
+            .then((response) => response.body);
     }
 );
 
 Cypress.Commands.add(
     "apiMockResetCalls",
-    (serverAddressWithPort: string = `127.0.0.1:${constants.Port}`): Cypress.Chainable<void> => {
-        return (cy.request(`${serverAddressWithPort}${constants.Paths.resetCalls}`).then(() => {}) as any) as Cypress.Chainable<void>;
+    (
+        serverAddressWithPort: string = `127.0.0.1:${constants.Port}`,
+        options: Partial<Cypress.Timeoutable> = {}
+    ): Cypress.Chainable<void> => {
+        return (cy
+            .request({
+                log: false,
+                timeout: options.timeout,
+                url: `${serverAddressWithPort}${constants.Paths.resetCalls}`,
+            })
+            .then(() => {}) as any) as Cypress.Chainable<void>;
     }
 );
 
 Cypress.Commands.add(
     "apiMockReset",
-    (serverAddressWithPort: string = `127.0.0.1:${constants.Port}`): Cypress.Chainable<void> => {
-        return (cy.request(`${serverAddressWithPort}${constants.Paths.resetAll}`).then(() => {}) as any) as Cypress.Chainable<void>;
+    (
+        serverAddressWithPort: string = `127.0.0.1:${constants.Port}`,
+        options: Partial<Cypress.Timeoutable> = {}
+    ): Cypress.Chainable<void> => {
+        return (cy
+            .request({ log: false, timeout: options.timeout, url: `${serverAddressWithPort}${constants.Paths.resetAll}` })
+            .then(() => {}) as any) as Cypress.Chainable<void>;
     }
 );

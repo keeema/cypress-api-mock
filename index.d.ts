@@ -10,7 +10,12 @@ declare namespace Cypress {
          * @param response mock response
          * @param serverAddressWithPort url address of mock server. If no address passed, localhost is called
          */
-        apiMock(pattern: string, response: string | Object, serverAddressWithPort?: string): Cypress.Chainable<void>;
+        apiMock(
+            pattern: string,
+            response: string | Object,
+            serverAddressWithPort?: string,
+            options?: Partial<Cypress.Timeoutable>
+        ): Cypress.Chainable<void>;
         /**
          * Retrieve list of requests.
          * @param serverAddressWithPort url address of mock server
@@ -32,10 +37,10 @@ declare namespace Cypress {
         /** Reset list of received requests and responses.
          * @param serverAddressWithPort url address of mock server. If no address passed, localhost is called
          */
-        apiMockResetCalls(serverAddressWithPort?: string): Cypress.Chainable<void>;
+        apiMockResetCalls(serverAddressWithPort?: string, options?: Partial<Cypress.Timeoutable>): Cypress.Chainable<void>;
         /**
          * @param serverAddressWithPort url address of mock server. If no address passed, localhost is called
          Reset mock registrations and list of received requests.*/
-        apiMockReset(serverAddressWithPort?: string): Cypress.Chainable<void>;
+        apiMockReset(serverAddressWithPort?: string, options?: Partial<Cypress.Timeoutable>): Cypress.Chainable<void>;
     }
 }

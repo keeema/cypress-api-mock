@@ -3,6 +3,7 @@ import * as multiparty from "multiparty";
 import * as fs from "fs";
 import * as path from "path";
 import { constants } from "./constants";
+import { setTimeout } from "timers";
 
 const paramRegex = /\$\{(?![0-9])[.a-zA-Z0-9$_]+\}/gm;
 const apiMockLogsFolderPath = path.resolve(constants.ApiMockFolderPath);
@@ -14,11 +15,11 @@ const mocks = new Map<string, string | Object>();
 const requests = new Map<string, IApiMockRequestData[]>();
 const responses = new Map<string, string[]>();
 
-let deleteTimeout: NodeJS.Timeout;
+let deleteTimeout: ReturnType<typeof setTimeout>;
 
 export function startServer(config: IApiMockConfiguration): void {
     //Todo delete
-    setInterval(() => log(`Server on ${config.apiMockServer.hostname}:${config.apiMockServer.hostPort} is alive`, "\x1b[33m"), 15 * 1000);
+    setInterval(() => log(`Server on ${config.apiMockServer.hostname}:${config.apiMockServer.hostPort} is alive`, "\x1b[33m"), 150 * 1000);
     const server = http.createServer(async (req, res) => {
         log(`Server received url: ${req.url}`, "\x1b[33m");
         try {
@@ -69,11 +70,15 @@ export function startServer(config: IApiMockConfiguration): void {
 }
 
 function setNewDeleteTimeout(): void {
-    if (deleteTimeout !== undefined) {
-        clearTimeout(deleteTimeout);
-    }
+    try {
+        if (deleteTimeout !== undefined) {
+            clearTimeout(deleteTimeout);
+        }
 
-    deleteTimeout = setTimeout(() => reset(), 5 * 60000);
+        deleteTimeout = setTimeout(() => reset(), 5 * 60000);
+    } catch (e) {
+        log(`I\t Timeout setup failed ${e.message}`, "\x1b[31m");
+    }
 }
 
 function getRequests(): { [key: string]: IApiMockRequestData[] } {
@@ -110,7 +115,6 @@ function resetMock(): void {
 }
 
 function reset(): void {
-    log(`I\tMock and calls reset`, "\x1b[33m");
     resetCalls();
     resetMock();
 }

@@ -8,7 +8,4 @@ export declare const constants: {
         resetCalls: string;
     };
     ApiMockFolderPath: string;
-    DeleteDataOlderThenInMinutes: number;
-    ResetCallsIntervalInMinutes: number;
-    ResetMocksIntervalInMinutes: number;
 };
