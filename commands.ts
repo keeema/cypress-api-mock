@@ -15,10 +15,10 @@ Cypress.Commands.add(
         return (cy
             .request({
                 log: false,
-                timeout: options?.timeout,
                 method: "POST",
                 url: `${serverAddressWithPort}${constants.Paths.registerMock}`,
                 body: data,
+                ...options,
             })
             .then(() => {}) as any) as Cypress.Chainable<void>;
     }
@@ -30,12 +30,13 @@ Cypress.Commands.add(
         serverAddressWithPort: string = `127.0.0.1:${constants.Port}`,
         options: Partial<Cypress.Timeoutable> = {}
     ): Cypress.Chainable<Map<string, IApiMockRequestData[]>> => {
+        Cypress.log({});
         return cy
             .request<Map<string, IApiMockRequestData[]>>({
                 log: false,
-                timeout: options.timeout,
                 url: `${serverAddressWithPort}${constants.Paths.getRequests}`,
-                body: options, //????
+                body: {},
+                ...options,
             })
             .then((response) => response.body);
     }
@@ -47,12 +48,13 @@ Cypress.Commands.add(
         serverAddressWithPort: string = `127.0.0.1:${constants.Port}`,
         options: Partial<Cypress.Timeoutable> = {}
     ): Cypress.Chainable<Map<string, string[]>> => {
+        Cypress.log({});
         return cy
             .request<Map<string, string[]>>({
                 log: false,
-                timeout: options.timeout,
                 url: `${serverAddressWithPort}${constants.Paths.getResponses}`,
-                body: options,
+                body: {},
+                ...options,
             })
             .then((response) => response.body);
     }
@@ -64,11 +66,12 @@ Cypress.Commands.add(
         serverAddressWithPort: string = `127.0.0.1:${constants.Port}`,
         options: Partial<Cypress.Timeoutable> = {}
     ): Cypress.Chainable<void> => {
+        Cypress.log({});
         return (cy
             .request({
                 log: false,
-                timeout: options.timeout,
                 url: `${serverAddressWithPort}${constants.Paths.resetCalls}`,
+                ...options,
             })
             .then(() => {}) as any) as Cypress.Chainable<void>;
     }
@@ -80,8 +83,9 @@ Cypress.Commands.add(
         serverAddressWithPort: string = `127.0.0.1:${constants.Port}`,
         options: Partial<Cypress.Timeoutable> = {}
     ): Cypress.Chainable<void> => {
+        Cypress.log({});
         return (cy
-            .request({ log: false, timeout: options.timeout, url: `${serverAddressWithPort}${constants.Paths.resetAll}` })
+            .request({ log: false, url: `${serverAddressWithPort}${constants.Paths.resetAll}`, ...options })
             .then(() => {}) as any) as Cypress.Chainable<void>;
     }
 );

@@ -39,7 +39,7 @@ beforeEach(() => cy.apiMockReset());
 ```
 
 You can also reset the log of requests and responses during the test suite.
-Requests, responses and mocks older then 5 minutes are deleted in 10 minutes interval by default.
+Requests, responses and mocks are deleted once 5 minutes timeout after the mocks is written expires. If new mock is written, timeout is reset.
 
 ```tsx
 cy.apiMockResetCalls();

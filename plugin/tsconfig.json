@@ -3,5 +3,5 @@
     "compilerOptions": {
         "declaration": true
     },
-    "include": ["./**/*.ts", "../constants.d.ts", "../constants.ts"]
+    "include": ["./**/*.ts"]
 }

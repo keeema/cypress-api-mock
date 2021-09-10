@@ -3,7 +3,7 @@ import * as webpack from "webpack";
 
 const config: webpack.Configuration = {
     mode: "development",
-    entry: path.resolve(__dirname, "server", "startApiMockServer.ts"),
+    entry: path.resolve(__dirname, "server", "startServer.ts"),
     output: {
         path: path.resolve(__dirname, "server", "dist"),
         filename: "serverApiMock.js",

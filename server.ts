@@ -18,14 +18,11 @@ const responses = new Map<string, string[]>();
 let deleteTimeout: ReturnType<typeof setTimeout>;
 
 export function startServer(config: IApiMockConfiguration): void {
-    //Todo delete
-    setInterval(() => log(`Server on ${config.apiMockServer.hostname}:${config.apiMockServer.hostPort} is alive`, "\x1b[33m"), 150 * 1000);
     const server = http.createServer(async (req, res) => {
         log(`Server received url: ${req.url}`, "\x1b[33m");
         try {
             switch (req.url) {
-                // Todo delete
-                case "/testIfRunning": {
+                case constants.Paths.serverIsRunning: {
                     res.writeHead(200, { "Content-Type": "text/plain" });
                     res.end("Server is running!\n");
                     break;
@@ -56,7 +53,7 @@ export function startServer(config: IApiMockConfiguration): void {
                     break;
                 }
                 default: {
-                    await ProcessApiRequest(req, res);
+                    await processApiRequest(req, res);
                 }
             }
         } catch {
@@ -75,7 +72,7 @@ function setNewDeleteTimeout(): void {
             clearTimeout(deleteTimeout);
         }
 
-        deleteTimeout = setTimeout(() => reset(), 5 * 60000);
+        deleteTimeout = setTimeout(() => reset(), constants.ResetDataTimeoutInMinutes * 60000);
     } catch (e) {
         log(`I\t Timeout setup failed ${e.message}`, "\x1b[31m");
     }
@@ -120,15 +117,13 @@ function reset(): void {
 }
 
 function registerMock(pattern: string, response: string | Object): null {
-    log(`I\tMock registration for:\t${pattern} with response: ${response}`, "\x1b[33m");
+    log(`I\tMock registration for:\t${pattern}`, "\x1b[33m");
     mocks.set(pattern, response);
     return null;
 }
 
-async function ProcessApiRequest(req: any, res: any): Promise<void> {
-    log("In process request");
+async function processApiRequest(req: any, res: any): Promise<void> {
     const body = await processRequest(req);
-    log("After request processing");
     if (req.url !== undefined && mocks.has(req.url)) {
         const answer = prepareAnswer(req.url, body.data);
         registerCall(req.url, body, answer);
@@ -139,7 +134,6 @@ async function ProcessApiRequest(req: any, res: any): Promise<void> {
 }
 
 function registerCall(url: string, request: IApiMockRequestData, response: string): void {
-    log(`I\tRegistering call for url:${url}, with request ${request.data} and response ${response}`, "\x1b[33m");
     const particularRequests = requests.get(url) || [];
     particularRequests.push(request);
 
