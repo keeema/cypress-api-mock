@@ -2,14 +2,13 @@
 
 import { constants } from "./constants";
 
+const url: string = Cypress.env("cypress_api_mock_url") ?? "127.0.0.1";
+const port: number = Cypress.env("cypress_api_mock_port") ?? 3000;
+const serverAddressWithPort = `${url}:${port}`;
+
 Cypress.Commands.add(
     "apiMock",
-    (
-        pattern: string,
-        response: string | Object,
-        serverAddressWithPort: string = `127.0.0.1:${constants.Port}`,
-        options: Partial<Cypress.Timeoutable> = {}
-    ): Cypress.Chainable<void> => {
+    (pattern: string, response: string | Object, options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<void> => {
         Cypress.log({ message: [pattern] });
         const data: IApiMockOptions = { pattern, response };
         return (cy
@@ -26,10 +25,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
     "apiMockRequests",
-    (
-        serverAddressWithPort: string = `127.0.0.1:${constants.Port}`,
-        options: Partial<Cypress.Timeoutable> = {}
-    ): Cypress.Chainable<Map<string, IApiMockRequestData[]>> => {
+    (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<Map<string, IApiMockRequestData[]>> => {
         Cypress.log({});
         return cy
             .request<Map<string, IApiMockRequestData[]>>({
@@ -44,10 +40,9 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
     "apiMockResponses",
-    (
-        serverAddressWithPort: string = `127.0.0.1:${constants.Port}`,
-        options: Partial<Cypress.Timeoutable> = {}
-    ): Cypress.Chainable<Map<string, string[]>> => {
+    (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<Map<string, string[]>> => {
+        Cypress.env();
+
         Cypress.log({});
         return cy
             .request<Map<string, string[]>>({
@@ -62,10 +57,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
     "apiMockResetCalls",
-    (
-        serverAddressWithPort: string = `127.0.0.1:${constants.Port}`,
-        options: Partial<Cypress.Timeoutable> = {}
-    ): Cypress.Chainable<void> => {
+    (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<void> => {
         Cypress.log({});
         return (cy
             .request({
@@ -79,10 +71,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
     "apiMockReset",
-    (
-        serverAddressWithPort: string = `127.0.0.1:${constants.Port}`,
-        options: Partial<Cypress.Timeoutable> = {}
-    ): Cypress.Chainable<void> => {
+    (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<void> => {
         Cypress.log({});
         return (cy
             .request({ log: false, url: `${serverAddressWithPort}${constants.Paths.resetAll}`, ...options })

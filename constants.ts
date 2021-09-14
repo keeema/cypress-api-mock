@@ -1,5 +1,4 @@
 export const constants = {
-    Port: 3000,
     Paths: {
         serverIsRunning: "/cypress-api-mock-running",
         registerMock: "/register",

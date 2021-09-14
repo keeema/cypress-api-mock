@@ -247,7 +247,7 @@ async function getRequestData(req: http.IncomingMessage): Promise<IApiMockReques
     });
 }
 
-function log(message: string, color: string = "\x1b[0m"): void {
+export function log(message: string, color: string = "\x1b[0m"): void {
     console.log("API-MOCK", "\t", color, message, "\x1b[0m");
     writeFileLog(message);
 }

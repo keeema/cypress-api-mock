@@ -1,4 +1,4 @@
-import { constants } from "../constants";
 import { startServer } from "../server";
 
-startServer({ apiMockServer: { hostname: "0.0.0.0", hostPort: constants.Port } });
+const port: number = !isNaN(+process.argv?.[2]) ? +process.argv?.[2] : 3000;
+startServer({ apiMockServer: { hostname: "0.0.0.0", hostPort: port } });

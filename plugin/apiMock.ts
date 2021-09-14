@@ -1,13 +1,19 @@
-import { constants } from "../constants";
-import { startServer } from "../server";
+import { log, startServer } from "../server";
 
 function register(_: Cypress.PluginEvents, config?: Partial<IApiMockConfiguration>): void {
+    const url: string = config?.env?.["cypress_api_mock_url"] ?? "127.0.0.1";
+    const port: number = config?.env?.["cypress_api_mock_port"] ?? 3000;
+
     const fullConfig: IApiMockConfiguration = Object.assign<IApiMockConfiguration, Partial<IApiMockConfiguration> | undefined>(
-        { apiMockServer: { hostname: "127.0.0.1", hostPort: constants.Port } },
+        { apiMockServer: { hostname: url, hostPort: port } },
         config
     );
 
-    startServer(fullConfig);
+    if (url === "127.0.0.1") {
+        startServer(fullConfig);
+    } else {
+        log(`Not starting local server. Server should run on: ${url}`, "\x1b[32m");
+    }
 }
 
 export = register;
