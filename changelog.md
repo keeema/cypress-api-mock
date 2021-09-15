@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.2.1] - 2021-09-15
+
+-   Republish
+
 ## [5.2.0] - 2021-09-15
 
 -   Add separate server possibility.
