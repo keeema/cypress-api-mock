@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.2.2] - 2021-09-15
+
+-   Plugin server start and log color fix
+
 ## [5.2.1] - 2021-09-15
 
 -   Republish
