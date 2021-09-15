@@ -1,18 +1,25 @@
 /// <reference path="./index.d.ts" />
 
-declare namespace Cypress {
-    // eslint-disable-next-line @typescript-eslint/interface-name-prefix
-    interface Chainable<Subject> {
-        verifyUpcomingAssertions<TValue>(value: TValue, options?: Object, retryOptions?: Object): TValue;
-    }
-}
+import { constants } from "./constants";
+
+const url: string = Cypress.env("cypress_api_mock_url") ?? "127.0.0.1";
+const port: number = Cypress.env("cypress_api_mock_port") ?? 3000;
+const serverAddressWithPort = `${url}:${port}`;
 
 Cypress.Commands.add(
     "apiMock",
-    (pattern: string, response: string | Object): Cypress.Chainable<string[]> => {
+    (pattern: string, response: string | Object, options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<void> => {
         Cypress.log({ message: [pattern] });
-        const options: IApiMockOptions = { pattern, response };
-        return (cy.task("api-mock:register", options, { log: false }) as any) as Cypress.Chainable<string[]>;
+        const data: IApiMockOptions = { pattern, response };
+        return (cy
+            .request({
+                log: false,
+                method: "POST",
+                url: `${serverAddressWithPort}${constants.Paths.registerMock}`,
+                body: data,
+                ...options,
+            })
+            .then(() => {}) as any) as Cypress.Chainable<void>;
     }
 );
 
@@ -20,30 +27,54 @@ Cypress.Commands.add(
     "apiMockRequests",
     (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<Map<string, IApiMockRequestData[]>> => {
         Cypress.log({});
-        return cy.task("api-mock:get-requests", options, { log: false }).then((requests) => (requests as any) as Map<string, IApiMockRequestData[]>);
+        return cy
+            .request<Map<string, IApiMockRequestData[]>>({
+                log: false,
+                url: `${serverAddressWithPort}${constants.Paths.getRequests}`,
+                body: {},
+                ...options,
+            })
+            .then((response) => response.body);
     }
 );
 
 Cypress.Commands.add(
     "apiMockResponses",
     (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<Map<string, string[]>> => {
+        Cypress.env();
+
         Cypress.log({});
-        return cy.task("api-mock:get-responses", options, { log: false }).then((requests) => (requests as any) as Map<string, string[]>);
+        return cy
+            .request<Map<string, string[]>>({
+                log: false,
+                url: `${serverAddressWithPort}${constants.Paths.getResponses}`,
+                body: {},
+                ...options,
+            })
+            .then((response) => response.body);
     }
 );
 
 Cypress.Commands.add(
     "apiMockResetCalls",
-    (): Cypress.Chainable<void> => {
+    (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<void> => {
         Cypress.log({});
-        return (cy.task("api-mock:reset-calls", undefined, { log: false }) as any) as Cypress.Chainable<void>;
+        return (cy
+            .request({
+                log: false,
+                url: `${serverAddressWithPort}${constants.Paths.resetCalls}`,
+                ...options,
+            })
+            .then(() => {}) as any) as Cypress.Chainable<void>;
     }
 );
 
 Cypress.Commands.add(
     "apiMockReset",
-    (): Cypress.Chainable<void> => {
+    (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<void> => {
         Cypress.log({});
-        return (cy.task("api-mock:reset", undefined, { log: false }) as any) as Cypress.Chainable<void>;
+        return (cy
+            .request({ log: false, url: `${serverAddressWithPort}${constants.Paths.resetAll}`, ...options })
+            .then(() => {}) as any) as Cypress.Chainable<void>;
     }
 );
