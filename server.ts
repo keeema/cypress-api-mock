@@ -19,7 +19,7 @@ let deleteTimeout: ReturnType<typeof setTimeout>;
 
 export function startServer(config: IApiMockConfiguration): void {
     const server = http.createServer(async (req, res) => {
-        log(`Server received url: ${req.url}`, "\x1b[33m");
+        log(`I\tServer received url: ${req.url}`, "\x1b[33m");
         try {
             switch (req.url) {
                 case constants.Paths.serverIsRunning: {
@@ -62,7 +62,7 @@ export function startServer(config: IApiMockConfiguration): void {
     });
 
     server.listen(config.apiMockServer.hostPort, config.apiMockServer.hostname, () => {
-        log(`I\t apiMock server running at http://${config.apiMockServer.hostname}:${config.apiMockServer.hostPort}/`, "\x1b[33m");
+        log(`I\tapiMock server running at http://${config.apiMockServer.hostname}:${config.apiMockServer.hostPort}/`, "\x1b[33m");
     });
 }
 
@@ -74,7 +74,7 @@ function setNewDeleteTimeout(): void {
 
         deleteTimeout = setTimeout(() => reset(), constants.ResetDataTimeoutInMinutes * 60000);
     } catch (e) {
-        log(`I\t Timeout setup failed ${e.message}`, "\x1b[31m");
+        log(`I\tTimeout setup failed ${e.message}`, "\x1b[31m");
     }
 }
 
@@ -196,7 +196,7 @@ function answerOKWithResult(res: http.ServerResponse, result: string): void {
     res.statusCode = 200;
     res.setHeader("Content-Type", "text/plain");
     res.end(result);
-    log(`<-\t Answer OK with result. Status: ${res.statusCode}\tResponse:${result}`, "\x1b[32m");
+    log(`<-\tAnswer OK with result. Status: ${res.statusCode}\tResponse:${result}`, "\x1b[32m");
 }
 
 function answerNotFound(res: http.ServerResponse): void {

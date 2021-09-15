@@ -12,7 +12,7 @@ function register(_: Cypress.PluginEvents, config?: Partial<IApiMockConfiguratio
     if (url === "127.0.0.1") {
         startServer(fullConfig);
     } else {
-        log(`Not starting local server. Server should run on: ${url}`, "\x1b[32m");
+        log(`I\tNot starting local server. Server should run on: ${url}`, "\x1b[31m");
     }
 }
 
