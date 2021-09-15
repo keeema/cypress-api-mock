@@ -292,11 +292,11 @@ eval("\r\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\r\n
   \***************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: module, __webpack_require__ */
-/*! CommonJS bailout: module.exports is used directly at 15:0-14 */
+/*! CommonJS bailout: module.exports is used directly at 16:0-14 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
-eval("\r\nvar server_1 = __webpack_require__(/*! ../server */ \"./server.ts\");\r\nfunction register(_, config) {\r\n    var _a, _b, _c, _d;\r\n    var url = (_b = (_a = config === null || config === void 0 ? void 0 : config.env) === null || _a === void 0 ? void 0 : _a[\"cypress_api_mock_url\"]) !== null && _b !== void 0 ? _b : \"127.0.0.1\";\r\n    var port = (_d = (_c = config === null || config === void 0 ? void 0 : config.env) === null || _c === void 0 ? void 0 : _c[\"cypress_api_mock_port\"]) !== null && _d !== void 0 ? _d : 3000;\r\n    var fullConfig = Object.assign({ apiMockServer: { hostname: url, hostPort: port } }, config);\r\n    if (url === \"127.0.0.1\") {\r\n        server_1.startServer(fullConfig);\r\n    }\r\n    else {\r\n        server_1.log(\"I\\tNot starting local server. Server should run on: \" + url, \"\\x1b[31m\");\r\n    }\r\n}\r\nmodule.exports = register;\r\n\n\n//# sourceURL=webpack://cypress-api-mock/./plugin/apiMock.ts?");
+eval("\r\nvar server_1 = __webpack_require__(/*! ../server */ \"./server.ts\");\r\nfunction register(_, config) {\r\n    var _a, _b, _c, _d;\r\n    var url = (_b = (_a = config === null || config === void 0 ? void 0 : config.env) === null || _a === void 0 ? void 0 : _a[\"cypress_api_mock_url\"]) !== null && _b !== void 0 ? _b : \"127.0.0.1\";\r\n    var port = (_d = (_c = config === null || config === void 0 ? void 0 : config.env) === null || _c === void 0 ? void 0 : _c[\"cypress_api_mock_port\"]) !== null && _d !== void 0 ? _d : 3000;\r\n    var ipAddr = url.replace(/^((http|https):\\/\\/)*/, \"\");\r\n    var fullConfig = Object.assign({ apiMockServer: { hostname: ipAddr, hostPort: port } }, config);\r\n    if (ipAddr === \"127.0.0.1\") {\r\n        server_1.startServer(fullConfig);\r\n    }\r\n    else {\r\n        server_1.log(\"I\\tNot starting local server. Server should run on: \" + url, \"\\x1b[33m\");\r\n    }\r\n}\r\nmodule.exports = register;\r\n\n\n//# sourceURL=webpack://cypress-api-mock/./plugin/apiMock.ts?");
 
 /***/ }),
 
