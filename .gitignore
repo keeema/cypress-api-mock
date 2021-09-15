@@ -2,5 +2,5 @@
 cypress/screenshots
 cypress/videos
 cypress/api-mock-logs
-server/dist
+server/dist/api-mock-logs
 package-lock.json

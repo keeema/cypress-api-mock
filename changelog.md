@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.2.0] - 2021-09-15
+
+-   Add separate server possibility.
+
 ## [5.1.1] - 2021-08-04
 
 -   Add new logs and colors
