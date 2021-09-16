@@ -3,8 +3,8 @@ Description=Cypress api stub
 
 [Service]
 PermissionsStartOnly=true
-ExecStartPre=/bin/mkdir -p /home/spravce/ApiMock/cypress/api-mock-logs
-ExecStart=/home/spravce/ApiMock/apiMock.js
+ExecStartPre=/usr/bin/mkdir -p /home/spravce/ApiMock/cypress/api-mock-logs
+ExecStart=/home/spravce/ApiMock/serverApiMock.js
 Restart=always
 User=nobody
 Group=nogroup
