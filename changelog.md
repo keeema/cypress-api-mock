@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.2.3] - 2021-09-15
+
+-   Server is now executable on linux
+
 ## [5.2.2] - 2021-09-15
 
 -   Plugin server start and log color fix

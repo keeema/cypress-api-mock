@@ -1,6 +1,8 @@
 import * as path from "path";
 import * as webpack from "webpack";
 
+const ShebangPlugin = require("webpack-shebang-plugin");
+
 const config: webpack.Configuration = {
     mode: "development",
     entry: path.resolve(__dirname, "server", "startServer.ts"),
@@ -26,6 +28,7 @@ const config: webpack.Configuration = {
             },
         ],
     },
+    plugins: [new ShebangPlugin()],
 };
 
 export default config;
