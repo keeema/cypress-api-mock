@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.2.4] - 2021-09-20
+
+-   Added cypress@^8.0.1
+
 ## [5.2.3] - 2021-09-15
 
 -   Server is now executable on linux
