@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.2.5] - 2021-09-27
+
+-   Fixed dependencies
+
 ## [5.2.4] - 2021-09-20
 
 -   Added cypress@^8.0.1
