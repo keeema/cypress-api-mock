@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.2.6] - 2021-09-27
+
+-   Shorten logs longer than 1024
+
 ## [5.2.5] - 2021-09-27
 
 -   Fixed dependencies

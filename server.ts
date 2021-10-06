@@ -5,6 +5,7 @@ import * as path from "path";
 import { constants } from "./constants";
 import { setTimeout } from "timers";
 
+const maxLength = 1024;
 const paramRegex = /\$\{(?![0-9])[.a-zA-Z0-9$_]+\}/gm;
 const apiMockLogsFolderPath = path.resolve(constants.ApiMockFolderPath);
 const testTimestamp = new Date().toISOString().replace(/(:)|(\.)/g, "-");
@@ -74,7 +75,7 @@ function setNewDeleteTimeout(): void {
 
         deleteTimeout = setTimeout(() => reset(), constants.ResetDataTimeoutInMinutes * 60000);
     } catch (e) {
-        log(`I\tTimeout setup failed ${e.message}`, "\x1b[31m");
+        log(`I\tTimeout setup failed ${(e as any).message}`, "\x1b[31m");
     }
 }
 
@@ -181,7 +182,12 @@ function getParamValue(bodyObj: object, param: string): string {
 
 async function processRequest(req: http.IncomingMessage): Promise<IApiMockRequestData> {
     const data = await getRequestData(req);
-    log(`->\tRequest processing - URL: ${req.url}\tData: ${data.data}`, "\x1b[36m");
+    log(
+        `->\tRequest processing - URL: ${req.url}\tData: ${
+            data.data && data.data.length > maxLength ? `More then ${maxLength} characters` : data.data
+        }`,
+        "\x1b[36m"
+    );
     return data;
 }
 
@@ -196,7 +202,12 @@ function answerOKWithResult(res: http.ServerResponse, result: string): void {
     res.statusCode = 200;
     res.setHeader("Content-Type", "text/plain");
     res.end(result);
-    log(`<-\tAnswer OK with result. Status: ${res.statusCode}\tResponse:${result}`, "\x1b[32m");
+    log(
+        `<-\tAnswer OK with result. Status: ${res.statusCode}\tResponse:${
+            result && result.length > maxLength ? `More then ${maxLength} characters` : result
+        }`,
+        "\x1b[32m"
+    );
 }
 
 function answerNotFound(res: http.ServerResponse): void {
