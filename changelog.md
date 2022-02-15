@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.3.0] - 2022-02-15
+
+-    Upgrade cypress@^9.2.0
+
 ## [5.2.6] - 2021-09-27
 
 -   Shorten logs longer than 1024

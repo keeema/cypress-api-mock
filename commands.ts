@@ -25,10 +25,10 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
     "apiMockRequests",
-    (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<Map<string, IApiMockRequestData[]>> => {
+    (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<{ [key: string]: IApiMockRequestData[] }> => {
         Cypress.log({});
         return cy
-            .request<Map<string, IApiMockRequestData[]>>({
+            .request<{ [key: string]: IApiMockRequestData[] }>({
                 log: false,
                 url: `${serverAddressWithPort}${constants.Paths.getRequests}`,
                 body: {},
@@ -40,12 +40,12 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
     "apiMockResponses",
-    (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<Map<string, string[]>> => {
+    (options: Partial<Cypress.Timeoutable> = {}): Cypress.Chainable<{ [key: string]: string[] }> => {
         Cypress.env();
 
         Cypress.log({});
         return cy
-            .request<Map<string, string[]>>({
+            .request<{ [key: string]: string[] }>({
                 log: false,
                 url: `${serverAddressWithPort}${constants.Paths.getResponses}`,
                 body: {},

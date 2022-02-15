@@ -1,6 +1,6 @@
 {
     "name": "cypress-api-mock",
-    "version": "5.2.6",
+    "version": "5.3.0",
     "description": "Cypress plugin for mocking API",
     "main": "index",
     "scripts": {
@@ -14,7 +14,7 @@
     },
     "dependencies": {
         "@types/multiparty": "^0.0.32",
-        "cypress": "^7.2.1 || ^8.0.1",
+        "cypress": "^9.2.0",
         "multiparty": "^4.2.2"
     },
     "devDependencies": {
