@@ -1,8 +1,12 @@
 # Changelog
 
+## [5.4.0] - 2022-09-23
+
+-   Upgrade cypress@^10.8.0
+
 ## [5.3.0] - 2022-02-15
 
--    Upgrade cypress@^9.2.0
+-   Upgrade cypress@^9.2.0
 
 ## [5.2.6] - 2021-09-27
 
