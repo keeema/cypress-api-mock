@@ -14,7 +14,7 @@
     },
     "dependencies": {
         "@types/multiparty": "^0.0.32",
-        "cypress": "^12.17.1",
+        "cypress": "12.14.0",
         "multiparty": "^4.2.2"
     },
     "devDependencies": {
